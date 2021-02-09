@@ -2,7 +2,7 @@ import csv
 from cryptography.fernet import Fernet
 import hashlib
 #keygen is run whe key. key has yet to be generated
-#import keygen
+import keygen
 #Crypto Classes
 class Crypto_fernet_limited:
   #getter and setter
@@ -23,9 +23,18 @@ class Crypto_fernet_limited:
   def fernet_read_key(self):
     return open("key.key", "rb").read()
 
+  #read and write any named file
+  def write_file(self, file, content):
+    with open(file, "wb") as key_file:
+        key_file.write(content)
+  #can read any file based off parameter input
+  def read_file(self, file):
+    return open(file, "rb").read()
+
   #returns message encrypt
   def fernet_encrypt(self, msg_plain):
     self.set_key(self.fernet_read_key())
+    print("msg type:", type(msg_plain))
     msg_encoded = msg_plain.encode()
     
     fern_a = Fernet(self.get_key())
@@ -150,9 +159,24 @@ class User_db:
 #-------------------------------------------------------
 def main():
   #Reading key file to get token used for encryption
-  # fern_lim = Crypto_fernet_limited()
+  fern_lim = Crypto_fernet_limited()
+  #print(fern_lim.fernet_encrypt("test"))
   # token_key = fern_lim.fernet_read_key()
-  # fern_lim.set_key(token_key)
+  token_key = b'3GZ5JyJpKmPGoZ95_EHk2uGISAmk9hrKrszRvOdDmIM='
+  fern_lim.set_key(token_key)
+  
+  encrypted_file_str = fern_lim.read_file("users.csv")
+  encrypted_file_de = encrypted_file_str.decode()
+  encrypted_file = encrypted_file_de.encode()
+  print("type key:", type(token_key))
+  print("type file:", type(encrypted_file))
+  print("file: ",encrypted_file)
+
+  decrypted_file = fern_lim.fernet_decrpyt(encrypted_file)
+ 
+  print("type file2:", type(encrypted_file))
+
+  fern_lim.write_file("users.csv", decrypted_file)
 
   #Creating and filling list of users
   user_list = User_db()
