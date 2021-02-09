@@ -67,13 +67,7 @@ def main():
     encrypt_file = fern.fernet_encrypt(orig_file)
     fern.write_file("user_backup.csv", orig_file)
     fern.write_file("users.csv", encrypt_file)
-  
-
-    print("orig", orig_file)
-    print("crypto", encrypt_file)
-
-
-
+    #print("crypt", encrypt_file)
 main()
 
 

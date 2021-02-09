@@ -2,7 +2,7 @@ import csv
 from cryptography.fernet import Fernet
 import hashlib
 #keygen is run whe key. key has yet to be generated
-import keygen
+#import keygen
 #Crypto Classes
 class Crypto_fernet_limited:
   #getter and setter
@@ -34,7 +34,7 @@ class Crypto_fernet_limited:
   #returns message encrypt
   def fernet_encrypt(self, msg_plain):
     self.set_key(self.fernet_read_key())
-    print("msg type:", type(msg_plain))
+    #print("msg type:", type(msg_plain))
     msg_encoded = msg_plain.encode()
     
     fern_a = Fernet(self.get_key())
@@ -161,21 +161,18 @@ def main():
   #Reading key file to get token used for encryption
   fern_lim = Crypto_fernet_limited()
   #print(fern_lim.fernet_encrypt("test"))
-  # token_key = fern_lim.fernet_read_key()
-  token_key = b'3GZ5JyJpKmPGoZ95_EHk2uGISAmk9hrKrszRvOdDmIM='
+  token_key = fern_lim.fernet_read_key()
+  # token_key = b'3GZ5JyJpKmPGoZ95_EHk2uGISAmk9hrKrszRvOdDmIM='
   fern_lim.set_key(token_key)
   
   encrypted_file_str = fern_lim.read_file("users.csv")
   encrypted_file_de = encrypted_file_str.decode()
   encrypted_file = encrypted_file_de.encode()
-  print("type key:", type(token_key))
-  print("type file:", type(encrypted_file))
-  print("file: ",encrypted_file)
-
+  # print("type key:", type(token_key))
+  # print("type file:", type(encrypted_file))
+  #print("file: ",encrypted_file)
   decrypted_file = fern_lim.fernet_decrpyt(encrypted_file)
  
-  print("type file2:", type(encrypted_file))
-
   fern_lim.write_file("users.csv", decrypted_file)
 
   #Creating and filling list of users
@@ -227,6 +224,13 @@ def main():
     user_list.create_and_add_user_to_file(create_User, "users.csv")
 
     print(create_user_name, "Account Created")
+
+
+  #at the end of program we will refernet encrypt 
+  encode_fin = decrypted_file.decode()
+  fin_encrypt_file = fern_lim.fernet_encrypt(encode_fin)
+ 
+  fern_lim.write_file("users.csv", fin_encrypt_file)
 main()
 
 
@@ -243,3 +247,9 @@ main()
 # 6f597c1ddab467f7bf5498aad1b41899,7110eda4d09e062aa5e4a390b0a572ac0d2c0220
 # 9f9d51bc70ef21ca5c14f307980a29d8,81fe8bfe87576c3ecb22426f8e57847382917acf
 # 0dcdd3013883bb2ce068398a9d72a576, 7110eda4d09e062aa5e4a390b0a572ac0d2c0220
+
+#Fernet encrpyted file with hashed credentials
+#gAAAAABgIw4CWa72x9spXf1Q-fLDD3vA9Ca04vEoNL0kxY_UkVQqxA_XM7XihKkS-IaqeWA-JIIJ_-KYVtVpG_Z8PXInIiEQmGWf5Vhb_sApcsgvoEDM8kMYqWcO2Za8EUCjduKC5TIaFnCHFcPYUeE6zV-SJsSjtEXAmf1wqLUcTzdNP6_Tzmy4mytRrn87yQShf0bsSgptyEXOvtdkTBjUTvNuCKCEVl1ptDeiFCHmqaI2bleiqKPYpkFCZejXhUiAoNen3VrjaH68UeIdAffdw_C7MUCbnbL-Nt-RbRt799mC8G5vhdxSxaUoRar2FqyN211YpCPns_NZL3emZzQHTW6hM0IKyl7lXeEg_zkP02uxXTEAMWat2wKnUya1s-w6KkFPsHBIWvVhpq4LMOMYipWZ7B0ZpGBEZxgrRVhw1sBMONcKX-TZQNTNW_ifyjkfm0RTRk75WXp0j13uUsiZOdbsb98y0Q==
+
+
+#Note: if not in right binary form. You need to encode or decode element to correct type
